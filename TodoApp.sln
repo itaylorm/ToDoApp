@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoLibrary", "TodoLibrary\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi", "TodoApi\TodoApi.csproj", "{02D82645-5BAE-4BDD-9454-61E33A2001F2}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TodoDb", "TodoDb\TodoDb.sqlproj", "{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{02D82645-5BAE-4BDD-9454-61E33A2001F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02D82645-5BAE-4BDD-9454-61E33A2001F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02D82645-5BAE-4BDD-9454-61E33A2001F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
 ﻿namespace TodoLibrary.Models;
 
-public class Todo
+public class TodoModel
 {
     public int Id { get; set; }
 
