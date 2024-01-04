@@ -1,0 +1,84 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+@using System.Net.Http.Json
+@inject IHttpClientFactory factory
+@inject TokenModel tokenInfo
+
+<PageTitle>Home</PageTitle>
+
+@if(isLoggedIn)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col h1 text-center">You are logged In!</div>
+        </div>
+        <div class="row">
+            <div class="text-center">
+                <button class="btn btn-danger" @onclick="LogOut">Log out</button>
+            </div>
+
+        </div>
+    </div>
+
+}
+else
+{
+
+    <EditForm Model="login" FormName="loginForm" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="container">
+            <div class="row">
+                <div class="col h1 text-center">Please Login</div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-1 mb-2">
+                    <label class="form-label" for="username">Username</label>
+                </div>
+                <div class="col-4 mb-2">
+                    <InputText id="username" class="form-control" @bind-Value="login.Username" />
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-1 mb-2">
+                    <label class="form-label" for="password">Password</label>
+                </div>
+                <div class="col-4 mb-2">
+                    <InputText id="password" class="form-control" type="password" @bind-Value="login.Password" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-center">
+                    <button class="btn btn-primary">Login</button>
+                </div>
+            </div>
+        </div>
+
+    </EditForm>
+}
+
+@code {
+    private AuthenticationModel login = new();
+    private bool isLoggedIn;
+
+    protected override void OnInitialized()
+    {
+        isLoggedIn = !string.IsNullOrWhiteSpace(tokenInfo.Token);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var client = factory.CreateClient("api");
+        var response = await client.PostAsJsonAsync<AuthenticationModel>("Authentication/token", login);
+        tokenInfo.Token = await response.Content.ReadAsStringAsync();
+        isLoggedIn = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void LogOut()
+    {
+        tokenInfo.Token = string.Empty;
+        isLoggedIn = false;
+    }
+}
