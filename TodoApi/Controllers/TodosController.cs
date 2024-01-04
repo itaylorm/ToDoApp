@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using TodoLibrary.Data;
-using TodoLibrary.DataAccess;
 using TodoLibrary.Models;
 
 namespace TodoApi.Controllers;
