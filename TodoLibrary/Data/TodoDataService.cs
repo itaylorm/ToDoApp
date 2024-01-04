@@ -17,17 +17,17 @@ namespace TodoLibrary.Data
             _log = log;
         }
 
-        public async Task<List<ITodoModel>?> GetTodos(int id)
+        public async Task<List<ITodoModel>?> GetTodos(int assignedTo)
         {
             var todos = await _sql.LoadDataAsync<TodoModel, dynamic>("dbo.spTodos_GetAllAssigned", 
-                new { Id = id }, ConnectionStringName); ;
+                new { AssignedTo = assignedTo }, ConnectionStringName); ;
             if (todos != null)
             {
                 return todos.ToList<ITodoModel>();
             }
             else
             {
-                _log.LogError("Unable to retrieve todos for {id}", id);
+                _log.LogError("Unable to retrieve todos for {id}", assignedTo);
                 return null;
             }
         }
@@ -47,9 +47,10 @@ namespace TodoLibrary.Data
             }
         }
 
-        public async Task<int> CreateTodo(ITodoModel todo)
+        public async Task<int> CreateTodo(TodoModel todo)
         {
-            int id = await _sql.AddDataAsync("dbo.spTodo_Create", todo, "Id", ConnectionStringName);
+            int id = await _sql.AddDataAsync("dbo.spTodos_Create", 
+                new { todo.Id, todo.AssignedTo, todo.Task }, "Id", ConnectionStringName);
             if (id != -1)
             {
                 _log.LogInformation("Added Todo Task: {Task} AssignedTo: {AssignedTo} with id {Id}", todo.Task, todo.AssignedTo, id);

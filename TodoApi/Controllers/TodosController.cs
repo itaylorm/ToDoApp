@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using TodoLibrary.Data;
+using TodoLibrary.DataAccess;
 using TodoLibrary.Models;
 
 namespace TodoApi.Controllers;
@@ -7,25 +11,62 @@ namespace TodoApi.Controllers;
 [ApiController]
 public class TodosController : ControllerBase
 {
+    private readonly ILogger<TodosController> _log;
+    private readonly ITodoDataService _data;
+
+    public TodosController(ILogger<TodosController> log, ITodoDataService data)
+    {
+        _log = log;
+        _data = data;
+    }
+
+    private int GetUserId()
+    {
+        var userIdString = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (userIdString == null)
+        {
+            _log.LogError("The user did not have a valid id");
+            return -1;
+        }
+        return int.Parse(userIdString);
+    }
+
     // GET: api/<TodosController>
     [HttpGet]
-    public ActionResult<IEnumerable<TodoModel>> Get()
+    public async Task<ActionResult<IEnumerable<TodoModel>>> Get()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = GetUserId();
+            var todos = await _data.GetTodos(userId);
+            return Ok(todos);
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to get todos");
+            return BadRequest();
+        }
+
     }
 
     // GET api/Todos/5
-    [HttpGet("{id}")]
-    public ActionResult<TodoModel> Get(int id)
+    [HttpGet("{todoId}")]
+    public async Task<ActionResult<TodoModel>> Get(int todoId)
     {
-        throw new NotImplementedException();
+        var userId = GetUserId();
+        var todo = await _data.GetTodo(userId, todoId);
+        return Ok(todo);
     }
 
     // POST api/Todos
     [HttpPost]
-    public IActionResult Post([FromBody] TodoModel todo)
+    public async Task<ActionResult<TodoModel>> Post([FromBody] string task)
     {
-        throw new NotImplementedException();
+        var userId = GetUserId();
+        var todo = new TodoModel { AssignedTo = userId, Task = task };
+        int id = await _data.CreateTodo(todo);
+        todo.Id = id;
+        return Ok(todo);
     }
 
     // PUT api/Todos/5

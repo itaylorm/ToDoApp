@@ -1,12 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TodoLibrary.Data;
+using TodoLibrary.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IDataAccess, SqlDataAccess>();
+builder.Services.AddScoped<ITodoDataService, TodoDataService>();
 
 builder.Services.AddAuthorization(opts =>
 {
@@ -60,8 +65,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.MapControllers();
 app.MapHealthChecks("/health").AllowAnonymous();
