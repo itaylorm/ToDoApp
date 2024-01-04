@@ -74,17 +74,17 @@ public class AuthenticationController : ControllerBase
         {
             return null;
         }
-        else if(CompareValues(data.UserName, "taylor") &&
+        else if(CompareValues(data.UserName.ToLower(), "taylor") &&
                 CompareValues(data.Password, "Test123"))
         {
             return new UserData(1, data.UserName, "Taylor", "Maxwell");
         }
-        else if (CompareValues(data.UserName, "marcia") &&
+        else if (CompareValues(data.UserName.ToLower(), "marcia") &&
             CompareValues(data.Password, "Test123"))
         {
             return new UserData(1, data.UserName, "Marcia", "Maxwell");
         }
-        else if (CompareValues(data.UserName, "kim") &&
+        else if (CompareValues(data.UserName.ToLower(), "kim") &&
             CompareValues(data.Password, "Test123"))
         {
             return new UserData(1, data.UserName, "Kim", "Hull");

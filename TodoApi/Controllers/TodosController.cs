@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using TodoLibrary.Data;
 using TodoLibrary.DataAccess;
 using TodoLibrary.Models;
@@ -53,40 +54,89 @@ public class TodosController : ControllerBase
     [HttpGet("{todoId}")]
     public async Task<ActionResult<TodoModel>> Get(int todoId)
     {
-        var userId = GetUserId();
-        var todo = await _data.GetTodo(userId, todoId);
-        return Ok(todo);
+        try
+        {
+            var userId = GetUserId();
+            var todo = await _data.GetTodo(userId, todoId);
+            return Ok(todo);
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to get todos");
+            return BadRequest();
+        }
     }
 
     // POST api/Todos
     [HttpPost]
     public async Task<ActionResult<TodoModel>> Post([FromBody] string task)
     {
-        var userId = GetUserId();
-        var todo = new TodoModel { AssignedTo = userId, Task = task };
-        int id = await _data.CreateTodo(todo);
-        todo.Id = id;
-        return Ok(todo);
+        try
+        {
+            var userId = GetUserId();
+            int id = await _data.CreateTodo(userId, task);
+            var todo = new TodoModel { AssignedTo = userId, Task = task };
+            todo.Id = id;
+            return Ok(todo);
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to get todos");
+            return BadRequest();
+        }
+
     }
 
     // PUT api/Todos/5
     [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] TodoModel todo)
+    public async Task<IActionResult> Put(int id, [FromBody] string task)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = GetUserId();
+
+            await _data.UpdateTodoTask(userId, id, task);
+            var todo = new TodoModel { Id = id, AssignedTo = userId, Task = task };
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to get todos");
+            return BadRequest();
+        }
     }
 
     // PUT api/Todos/5/complete
     [HttpPut("{id}/complete")]
-    public IActionResult Complete(int id)
+    public async Task<IActionResult> Complete(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = GetUserId();
+            await _data.UpdateTodoComplete(userId, id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to set todo with id {id} to complete", id);
+            return BadRequest();
+        }
     }
 
     // DELETE api/Todos/5
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userId = GetUserId();
+            await _data.DeleteTodo(userId, id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to delete todo with id: {id}", id);
+            return BadRequest();
+        }
     }
 }
