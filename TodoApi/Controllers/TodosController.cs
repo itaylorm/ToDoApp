@@ -36,18 +36,20 @@ public class TodosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TodoModel>>> Get()
     {
+        int userId = -1;
         try
         {
-            var userId = GetUserId();
+            _log.LogInformation("GET: api/Todos for {userId}", userId);
+
+            userId = GetUserId();
             var todos = await _data.GetTodos(userId);
             return Ok(todos);
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to get todos");
+            _log.LogError(ex, "The GET call to api/Todos for {UserId} failed", userId);
             return BadRequest();
         }
-
     }
 
     // GET api/Todos/5
@@ -56,13 +58,16 @@ public class TodosController : ControllerBase
     {
         try
         {
+            _log.LogInformation("GET: api/Todos/{TodoId}", todoId);
+
             var userId = GetUserId();
             var todo = await _data.GetTodo(userId, todoId);
             return Ok(todo);
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to get todos");
+            _log.LogError(ex, "The GET call to {ApiPath} failed. The Id was {TodoId}", 
+                "api/Todos/Id", todoId);
             return BadRequest();
         }
     }
@@ -73,6 +78,7 @@ public class TodosController : ControllerBase
     {
         try
         {
+            _log.LogInformation("POST: api/Todos (Task: {Task})", task);
             var userId = GetUserId();
             int id = await _data.CreateTodo(userId, task);
             var todo = new TodoModel { AssignedTo = userId, Task = task };
@@ -81,7 +87,7 @@ public class TodosController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to get todos");
+            _log.LogError(ex, "The POST call to api/Todos failed. The value was {Task}", task);
             return BadRequest();
         }
 
@@ -89,53 +95,57 @@ public class TodosController : ControllerBase
 
     // PUT api/Todos/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] string task)
+    public async Task<IActionResult> Put(int todoId, [FromBody] string task)
     {
         try
         {
+            _log.LogInformation("PUT: api/Todos/{todoId} (Task: {task}", todoId, task);
             var userId = GetUserId();
 
-            await _data.UpdateTodoTask(userId, id, task);
-            var todo = new TodoModel { Id = id, AssignedTo = userId, Task = task };
+            await _data.UpdateTodoTask(userId, todoId, task);
+            var todo = new TodoModel { Id = todoId, AssignedTo = userId, Task = task };
             return Ok();
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to get todos");
+            _log.LogError(ex, "The PUT call to api/Todos/{todoId} failed. The value was {Task}", 
+                todoId, task);
             return BadRequest();
         }
     }
 
     // PUT api/Todos/5/complete
     [HttpPut("{id}/complete")]
-    public async Task<IActionResult> Complete(int id)
+    public async Task<IActionResult> Complete(int todoId)
     {
         try
         {
+            _log.LogInformation("PUT: api/Todos/{todoId}/complete", todoId);
             var userId = GetUserId();
-            await _data.UpdateTodoComplete(userId, id);
+            await _data.UpdateTodoComplete(userId, todoId);
             return Ok();
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to set todo with id {id} to complete", id);
+            _log.LogError(ex, "The PUT call to api/Todos/{todoId}/complete failed", todoId);
             return BadRequest();
         }
     }
 
     // DELETE api/Todos/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int todoId)
     {
         try
         {
+            _log.LogInformation("DELETE: api/Todos/{todoId}", todoId);
             var userId = GetUserId();
-            await _data.DeleteTodo(userId, id);
+            await _data.DeleteTodo(userId, todoId);
             return Ok();
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "Failed to delete todo with id: {id}", id);
+            _log.LogError(ex, "The DELETE call to api/Todos/{todoId} failed", todoId);
             return BadRequest();
         }
     }
