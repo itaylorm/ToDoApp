@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddTransient<TokenModel>();
+builder.Services.AddScoped<TokenModel>();
 
 var apiUrl = builder.Configuration.GetValue<string>("ApiUrl");
 if(string.IsNullOrEmpty(apiUrl)) {
