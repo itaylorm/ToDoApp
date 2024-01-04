@@ -52,7 +52,7 @@ public class SqlDataAccess : IDataAccess
                     var property = parameters.GetType().GetProperty(propertyName);
                     if (property != null)
                     {
-                        object value = property.GetValue(parameters, null);
+                        object? value = property.GetValue(parameters, null);
                         if (propertyName == idFieldName)
                         {
                             p.Add($"@{propertyName}", dbType: DbType.Int32, direction: ParameterDirection.Output);
