@@ -61,10 +61,12 @@ if (app.Environment.IsDevelopment())
     {
         opts.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         opts.RoutePrefix = string.Empty;
+        opts.InjectStylesheet("/css/theme-material.css");
     });
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
