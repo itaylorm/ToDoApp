@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApi", "TodoApi\TodoApi.
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TodoDb", "TodoDb\TodoDb.sqlproj", "{7C50F5D8-E126-4F81-9350-99C6C1A5B4E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApiClient", "BlazorApiClient\BlazorApiClient.csproj", "{B4CBFD4C-C30C-4586-8B14-9290612CF6D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApiClient", "BlazorApiClient\BlazorApiClient.csproj", "{B4CBFD4C-C30C-4586-8B14-9290612CF6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

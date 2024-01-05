@@ -91,7 +91,7 @@ public class TodosController : ControllerBase
     }
 
     // PUT api/Todos/5
-    [HttpPut("{id}")]
+    [HttpPut("{todoId}")]
     public async Task<IActionResult> Put(int todoId, [FromBody] string task)
     {
         int userId = -1;
@@ -112,7 +112,7 @@ public class TodosController : ControllerBase
     }
 
     // PUT api/Todos/5/complete
-    [HttpPut("{id}/complete")]
+    [HttpPut("{todoId}/complete")]
     public async Task<IActionResult> Complete(int todoId)
     {
         int userId = -1;
@@ -131,7 +131,7 @@ public class TodosController : ControllerBase
     }
 
     // DELETE api/Todos/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{todoId}")]
     public async Task<IActionResult> Delete(int todoId)
     {
         int userId = -1;

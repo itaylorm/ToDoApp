@@ -1,0 +1,105 @@
+﻿@page "/todos"
+@rendermode InteractiveServer
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@inject IHttpClientFactory factory
+@inject TokenModel tokenInfo
+@inject ILogger<Todos> log
+
+<PageTitle>To Dos</PageTitle>
+<div class="h1">To dos</div>
+
+@if(todos == null)
+{
+    <div class="h3">Loading...</div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="h3 text-danger">@errorMessage</div>
+}
+else if(todos.Any())
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
+                    @foreach (var t in todos)
+                    {
+                        <tr class="row mb-4">
+                            @if(t.IsComplete)
+                            {
+                                <td class="col-3">@t.Task</td>
+                                <td class="col-2 text-success">(Completed)</td>
+                            }
+                            else
+                            {
+                                <td class="col-3">@t.Task</td>
+                                <td class="col-2">
+                                    <button class="btn btn-sm btn-primary" 
+                                        @onclick="@(async () => await Complete(t))">
+                                        Complete
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="h3">No To Dos</div>
+}
+<button class="btn btn-primary mt-3" @onclick="GetTodos">Get To Dos</button>
+
+@code {
+    private List<TodoDisplayModel>? todos;
+    private HttpClient? client;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTodos();
+    }
+
+    private async Task GetTodos()
+    {
+        errorMessage = string.Empty;
+        todos = null;
+        client = factory.CreateClient("api");
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo.Token);
+
+        try
+        {
+            todos = await client.GetFromJsonAsync<List<TodoDisplayModel>>("todos");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            log.LogError(ex, "Error getting todos");
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Complete(TodoDisplayModel todo)
+    {
+        errorMessage = string.Empty;
+        client = factory.CreateClient("api");
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo.Token);
+        try
+        {
+            await client.PutAsJsonAsync($"todos/{todo.Id}/complete","");
+            todo.IsComplete = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            log.LogError(ex, "Error completing todo");
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+}

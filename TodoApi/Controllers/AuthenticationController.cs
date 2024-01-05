@@ -82,12 +82,12 @@ public class AuthenticationController : ControllerBase
         else if (CompareValues(data.UserName.ToLower(), "marcia") &&
             CompareValues(data.Password, "Test123"))
         {
-            return new UserData(1, data.UserName, "Marcia", "Maxwell");
+            return new UserData(2, data.UserName, "Marcia", "Maxwell");
         }
         else if (CompareValues(data.UserName.ToLower(), "kim") &&
             CompareValues(data.Password, "Test123"))
         {
-            return new UserData(1, data.UserName, "Kim", "Hull");
+            return new UserData(3, data.UserName, "Kim", "Hull");
         }
         return null;
     }
