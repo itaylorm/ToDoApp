@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TodoLibrary.Data;
 using TodoLibrary.Models;
 
-namespace TodoApi.Controllers;
+namespace TodoApi.Controllers.v1;
 
-[Route("api/[controller]")]
+[Route("api/v{version:ApiVersion}/[controller]")]
 [ApiController]
+[ApiVersion("1.0")]
 public class TodosController : ControllerBase
 {
     private readonly ILogger<TodosController> _log;
@@ -67,7 +69,7 @@ public class TodosController : ControllerBase
     }
 
     // GET api/Todos/5
-    [HttpGet("{todoId}", Name ="GetOneTodo")]
+    [HttpGet("{todoId}", Name = "GetOneTodo")]
     public async Task<ActionResult<TodoModel>> Get(int todoId)
     {
         int userId = -1;
@@ -80,7 +82,7 @@ public class TodosController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The GET call to {ApiPath} for UserId: {userId} failed. The Id was {TodoId}.", 
+            _log.LogError(ex, "The GET call to {ApiPath} for UserId: {userId} failed. The Id was {TodoId}.",
                 userId, "api/Todos/Id", todoId);
             return BadRequest();
         }
@@ -123,7 +125,7 @@ public class TodosController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The PUT call to api/Todos/{todoId} for UserId: {userId} failed. The value was {Task}", 
+            _log.LogError(ex, "The PUT call to api/Todos/{todoId} for UserId: {userId} failed. The value was {Task}",
                 todoId, userId, task);
             return BadRequest();
         }
@@ -149,7 +151,7 @@ public class TodosController : ControllerBase
     }
 
     // DELETE api/Todos/5
-    [HttpDelete("{todoId}", Name ="DeleteTodo")]
+    [HttpDelete("{todoId}", Name = "DeleteTodo")]
     public async Task<IActionResult> Delete(int todoId)
     {
         int userId = -1;

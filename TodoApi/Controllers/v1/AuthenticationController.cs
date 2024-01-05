@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace TodoApi.Controllers;
+namespace TodoApi.Controllers.v1;
 
-[Route("api/[controller]")]
+[Route("api/v{version:ApiVersion}/[controller]")]
 [ApiController]
+[ApiVersion("1.0")]
 public class AuthenticationController : ControllerBase
 {
     private readonly IConfiguration _config;
@@ -26,12 +28,12 @@ public class AuthenticationController : ControllerBase
     public ActionResult<string> Authenticate([FromBody] AuthenticationData data)
     {
         var user = ValidateCredentials(data);
-        if(user is null)
+        if (user is null)
         {
             return Unauthorized();
         }
         string? token = GenerateToken(user);
-        if(token is null)
+        if (token is null)
         {
             return Unauthorized();
         }
@@ -41,7 +43,7 @@ public class AuthenticationController : ControllerBase
     private string? GenerateToken(UserData user)
     {
         var securityKey = _config.GetValue<string>("Authentication:SecretKey");
-        if(securityKey is not null)
+        if (securityKey is not null)
         {
             var symetricKey = new SymmetricSecurityKey(
                 Encoding.ASCII.GetBytes(securityKey));
@@ -70,11 +72,11 @@ public class AuthenticationController : ControllerBase
     {
         // NON PRODUCTION CODE - REPLACE THIS WITH A CALL TO AUTH SYSTEM
 
-        if(string.IsNullOrEmpty(data.UserName) || string.IsNullOrEmpty(data.Password))
+        if (string.IsNullOrEmpty(data.UserName) || string.IsNullOrEmpty(data.Password))
         {
             return null;
         }
-        else if(CompareValues(data.UserName.ToLower(), "taylor") &&
+        else if (CompareValues(data.UserName.ToLower(), "taylor") &&
                 CompareValues(data.Password, "Test123"))
         {
             return new UserData(1, data.UserName, "Taylor", "Maxwell");
@@ -94,11 +96,11 @@ public class AuthenticationController : ControllerBase
 
     private bool CompareValues(string? actual, string? expected)
     {
-        if(actual is not null)
+        if (actual is not null)
         {
-            if(expected is not null)
+            if (expected is not null)
             {
-                if(actual.Equals(expected))
+                if (actual.Equals(expected))
                 {
                     return true;
                 }

@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TodoApi.StartupConfig;
-using TodoLibrary.Data;
-using TodoLibrary.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 DependencyInjectionExtensions.AddStandardServices(builder);
 DependencyInjectionExtensions.AddCustomServices(builder);
+DependencyInjectionExtensions.AddVersioning(builder);
 
 builder.Services.AddAuthorization(opts =>
 {
@@ -73,6 +72,5 @@ app.UseAuthorization();
 
 
 app.MapControllers();
-app.MapHealthChecks("/health").AllowAnonymous();
 
 app.Run();

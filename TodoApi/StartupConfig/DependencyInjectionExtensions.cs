@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Asp.Versioning;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
 using TodoLibrary.Data;
 using TodoLibrary.DataAccess;
@@ -65,6 +66,22 @@ namespace TodoApi.StartupConfig
                 });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+            });
+        }
+
+        public static void AddVersioning(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddApiVersioning(opts =>
+            {
+                opts.AssumeDefaultVersionWhenUnspecified = true;
+                opts.DefaultApiVersion = new ApiVersion(2, 0);
+                opts.ReportApiVersions = true;
+            })
+            .AddMvc()
+            .AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
             });
         }
 
