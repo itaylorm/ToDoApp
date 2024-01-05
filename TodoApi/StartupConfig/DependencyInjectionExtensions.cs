@@ -1,6 +1,9 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text;
 using TodoLibrary.Data;
 using TodoLibrary.DataAccess;
 
@@ -89,6 +92,52 @@ namespace TodoApi.StartupConfig
         {
             builder.Services.AddSingleton<IDataAccess, SqlDataAccess>();
             builder.Services.AddScoped<ITodoDataService, TodoDataService>();
+        }
+
+        public static void AddSecurity(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddAuthorization(opts =>
+            {
+                opts.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
+
+            string? secretKey = builder.Configuration.GetValue<string>("Authentication:SecretKey");
+            if (secretKey is null)
+            {
+                throw new Exception("Secret key is missing");
+            }
+            else
+            {
+                builder.Services.AddAuthentication("Bearer")
+                .AddJwtBearer(opts =>
+                {
+                    opts.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration.GetValue<string>("Authentication:Issuer"),
+                        ValidAudience = builder.Configuration.GetValue<string>("Authentication:Audience"),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey))
+                    };
+                });
+            }
+        }
+
+        public static void AddHealth(this WebApplicationBuilder builder)
+        {
+            var connectionString = builder.Configuration.GetConnectionString("Default");
+            if (connectionString is null)
+            {
+                throw new Exception("Connection string is missing");
+            }
+            else
+            {
+                builder.Services.AddHealthChecks()
+                    .AddSqlServer(connectionString);
+            }
         }
     }
 }
