@@ -30,6 +30,24 @@ public class TodosController : ControllerBase
     }
 
     // GET: api/<TodosController>
+    /// <summary>
+    /// Gets a list of all todos in system
+    /// </summary>
+    /// <remarks>
+    /// Sample Request: GET /api/todos -- 
+    /// Sample Response:
+    /// [
+    ///     {
+    ///         "id": 1,
+    ///         "task": "Do Laundry"
+    ///     },
+    ///     {
+    ///         "id": 2,
+    ///         "name": "Walk Dog"
+    ///     }
+    /// ]
+    /// </remarks>
+    /// <returns>List of todos.</returns>
     [HttpGet(Name = "GetAllTodos")]
     public async Task<ActionResult<IEnumerable<TodoModel>>> Get()
     {

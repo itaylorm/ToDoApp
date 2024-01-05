@@ -1,17 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TodoApi.StartupConfig;
 using TodoLibrary.Data;
 using TodoLibrary.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<IDataAccess, SqlDataAccess>();
-builder.Services.AddScoped<ITodoDataService, TodoDataService>();
+DependencyInjectionExtensions.AddStandardServices(builder);
+DependencyInjectionExtensions.AddCustomServices(builder);
 
 builder.Services.AddAuthorization(opts =>
 {

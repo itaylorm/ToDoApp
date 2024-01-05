@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
     <UserSecretsId>5a6fb14d-44ed-4e38-a601-02d2244d8b86</UserSecretsId>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
