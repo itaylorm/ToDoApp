@@ -9,7 +9,11 @@
 <PageTitle>To Dos</PageTitle>
 <div class="h1">To dos</div>
 
-@if(todos == null)
+@if(string.IsNullOrEmpty(tokenInfo.Token))
+{
+    <div class="h3 text-danger">Please login</div>
+}
+else if(todos == null)
 {
     <div class="h3">Loading...</div>
 }
