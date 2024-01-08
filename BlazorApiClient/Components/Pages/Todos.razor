@@ -1,5 +1,5 @@
 ﻿@page "/todos"
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using System.Net.Http.Headers
 @using System.Net.Http.Json
 @inject IHttpClientFactory factory

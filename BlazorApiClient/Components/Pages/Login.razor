@@ -1,11 +1,11 @@
 ﻿@page "/"
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @using System.Net.Http.Json
 @inject IHttpClientFactory factory
 @inject TokenModel tokenInfo
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Login</PageTitle>
 
 @if(isLoggedIn)
 {
