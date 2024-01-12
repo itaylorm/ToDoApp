@@ -31,7 +31,7 @@ public class TodosController : ControllerBase
         return int.Parse(userIdString);
     }
 
-    // GET: api/<TodosController>
+    // GET: api/v1/<TodosController>
     /// <summary>
     /// Gets a list of all todos in system
     /// </summary>
@@ -57,18 +57,18 @@ public class TodosController : ControllerBase
         try
         {
             userId = GetUserId();
-            _log.LogInformation("GET: api/Todos for {userId}", userId);
+            _log.LogInformation("GET: api/v1/Todos for {userId}", userId);
             var todos = await _data.GetTodos(userId);
             return Ok(todos);
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The GET call to api/Todos for UserId: {UserId} failed", userId);
+            _log.LogError(ex, "The GET call to api/v1/Todos for UserId: {UserId} failed", userId);
             return BadRequest();
         }
     }
 
-    // GET api/Todos/5
+    // GET api/v1/Todos/5
     [HttpGet("{todoId}", Name = "GetOneTodo")]
     public async Task<ActionResult<TodoModel>> Get(int todoId)
     {
@@ -76,19 +76,19 @@ public class TodosController : ControllerBase
         try
         {
             userId = GetUserId();
-            _log.LogInformation("GET: api/Todos/{TodoId} for UserId: {userId}", todoId, userId);
+            _log.LogInformation("GET: api/v1/Todos/{TodoId} for UserId: {userId}", todoId, userId);
             var todo = await _data.GetTodo(userId, todoId);
             return Ok(todo);
         }
         catch (Exception ex)
         {
             _log.LogError(ex, "The GET call to {ApiPath} for UserId: {userId} failed. The Id was {TodoId}.",
-                userId, "api/Todos/Id", todoId);
+                userId, "api/v1/Todos/Id", todoId);
             return BadRequest();
         }
     }
 
-    // POST api/Todos
+    // POST api/v1/Todos
     [HttpPost(Name = "CreateTodo")]
     public async Task<ActionResult<TodoModel>> Post([FromBody] string task)
     {
@@ -96,7 +96,7 @@ public class TodosController : ControllerBase
         try
         {
             userId = GetUserId();
-            _log.LogInformation("POST: api/Todos (Task: {Task}) for UserId: {userId}", task, userId);
+            _log.LogInformation("POST: api/v1/Todos (Task: {Task}) for UserId: {userId}", task, userId);
             int id = await _data.CreateTodo(userId, task);
             var todo = new TodoModel { AssignedTo = userId, Task = task };
             todo.Id = id;
@@ -104,13 +104,13 @@ public class TodosController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The POST call to api/Todos for UserId: {userId} failed. The value was {Task}", userId, task);
+            _log.LogError(ex, "The POST call to api/v1/Todos for UserId: {userId} failed. The value was {Task}", userId, task);
             return BadRequest();
         }
 
     }
 
-    // PUT api/Todos/5
+    // PUT api/v1/Todos/5
     [HttpPut("{todoId}", Name = "UpdateTodoTask")]
     public async Task<IActionResult> Put(int todoId, [FromBody] string task)
     {
@@ -118,20 +118,20 @@ public class TodosController : ControllerBase
         try
         {
             userId = GetUserId();
-            _log.LogInformation("PUT: api/Todos/{todoId} (Task: {task} for UserId: {userId}", todoId, task, userId);
+            _log.LogInformation("PUT: api/v1/Todos/{todoId} (Task: {task} for UserId: {userId}", todoId, task, userId);
             await _data.UpdateTodoTask(userId, todoId, task);
             var todo = new TodoModel { Id = todoId, AssignedTo = userId, Task = task };
             return Ok();
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The PUT call to api/Todos/{todoId} for UserId: {userId} failed. The value was {Task}",
+            _log.LogError(ex, "The PUT call to api/v1/Todos/{todoId} for UserId: {userId} failed. The value was {Task}",
                 todoId, userId, task);
             return BadRequest();
         }
     }
 
-    // PUT api/Todos/5/complete
+    // PUT api/v1/Todos/5/complete
     [HttpPut("{todoId}/complete", Name = "CompleteTodo")]
     public async Task<IActionResult> Complete(int todoId)
     {
@@ -139,18 +139,18 @@ public class TodosController : ControllerBase
         try
         {
             userId = GetUserId();
-            _log.LogInformation("PUT: api/Todos/{todoId}/complete for UserId: {userId}", todoId, userId);
+            _log.LogInformation("PUT: api/v1/Todos/{todoId}/complete for UserId: {userId}", todoId, userId);
             await _data.UpdateTodoComplete(userId, todoId);
             return Ok();
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The PUT call to api/Todos/{todoId}/complete for UserId: {userId} failed", todoId, userId);
+            _log.LogError(ex, "The PUT call to api/v1/Todos/{todoId}/complete for UserId: {userId} failed", todoId, userId);
             return BadRequest();
         }
     }
 
-    // DELETE api/Todos/5
+    // DELETE api/v1/Todos/5
     [HttpDelete("{todoId}", Name = "DeleteTodo")]
     public async Task<IActionResult> Delete(int todoId)
     {
@@ -158,13 +158,13 @@ public class TodosController : ControllerBase
         try
         {
             userId = GetUserId();
-            _log.LogInformation("DELETE: api/Todos/{todoId}", todoId);
+            _log.LogInformation("DELETE: api/v1/Todos/{todoId}", todoId);
             await _data.DeleteTodo(userId, todoId);
             return Ok();
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "The DELETE call to api/Todos/{todoId} failed", todoId);
+            _log.LogError(ex, "The DELETE call to api/v1/Todos/{todoId} failed", todoId);
             return BadRequest();
         }
     }
